@@ -4,6 +4,7 @@
 class Listener
 
   constructor: ( el, @get, @field ) ->
+    @eventHandlers=[]
     @$el      = $ el
     @delayId  = ""                            # So we can cancel delayed checks
     @status   = null                          # This will be changed to bool
@@ -11,17 +12,36 @@ class Listener
     @msg      = new Msg     @$el, @get, @field # Toggles showing/hiding msgs
     @events()                                 # Listen for changes on element
 
+  destroy:=>
+    @msg.destroy()
+    if @$el.attr( 'type' ) is 'radio'         # Listen to all with same name
+      $( '[name="'+@$el.attr("name")+'"]' ).off 'change','**',@eventHandlers.radio
+    else
+      @$el.off 'change','**',@eventHandlers.change             # For checkboxes and select fields
+      @$el.off 'blur'  ,'**', @eventHandlers.blur             # On blur we run the check
+      if @field[ 1 ] is 'one-of'
+        $( window ).off 'nod-run-one-of','**',@eventHandlers.window
+      if @get.delay
+        @$el.off 'keyup','**',@eventHandlers.keyup       # delayed check on keypress
+
+
 
   events : =>
+    @eventHandlers['radio']=@runCheck
+    @eventHandlers['change']=@runCheck
+    @eventHandlers['blur']=@runCheck
+    @eventHandlers['window']=@runCheck
+    @eventHandlers['keyup']=@delayedCheck
+
     if @$el.attr( 'type' ) is 'radio'         # Listen to all with same name
-      $( '[name="'+@$el.attr("name")+'"]' ).on 'change', @runCheck
+      $( '[name="'+@$el.attr("name")+'"]' ).on 'change', @eventHandlers.radio
     else
-      @$el.on 'change', @runCheck             # For checkboxes and select fields
-      @$el.on 'blur'  , @runCheck             # On blur we run the check
+      @$el.on 'change', @eventHandlers.change             # For checkboxes and select fields
+      @$el.on 'blur'  , @eventHandlers.blur             # On blur we run the check
       if @field[ 1 ] is 'one-of'
-        $( window ).on 'nod-run-one-of', @runCheck
+        $( window ).on 'nod-run-one-of', @eventHandlers.window
       if @get.delay
-        @$el.on 'keyup' , @delayedCheck       # delayed check on keypress
+        @$el.on 'keyup' , @eventHandlers.keyup       # delayed check on keypress
 
 
   delayedCheck: =>

@@ -123,6 +123,9 @@ Listener = (function() {
 
     this.events = __bind(this.events, this);
 
+    this.destroy = __bind(this.destroy, this);
+
+    this.eventHandlers = [];
     this.$el = $(el);
     this.delayId = "";
     this.status = null;
@@ -131,17 +134,38 @@ Listener = (function() {
     this.events();
   }
 
-  Listener.prototype.events = function() {
+  Listener.prototype.destroy = function() {
+    this.msg.destroy();
     if (this.$el.attr('type') === 'radio') {
-      return $('[name="' + this.$el.attr("name") + '"]').on('change', this.runCheck);
+      return $('[name="' + this.$el.attr("name") + '"]').off('change', '**', this.eventHandlers.radio);
     } else {
-      this.$el.on('change', this.runCheck);
-      this.$el.on('blur', this.runCheck);
+      this.$el.off('change', '**', this.eventHandlers.change);
+      this.$el.off('blur', '**', this.eventHandlers.blur);
       if (this.field[1] === 'one-of') {
-        $(window).on('nod-run-one-of', this.runCheck);
+        $(window).off('nod-run-one-of', '**', this.eventHandlers.window);
       }
       if (this.get.delay) {
-        return this.$el.on('keyup', this.delayedCheck);
+        return this.$el.off('keyup', '**', this.eventHandlers.keyup);
+      }
+    }
+  };
+
+  Listener.prototype.events = function() {
+    this.eventHandlers['radio'] = this.runCheck;
+    this.eventHandlers['change'] = this.runCheck;
+    this.eventHandlers['blur'] = this.runCheck;
+    this.eventHandlers['window'] = this.runCheck;
+    this.eventHandlers['keyup'] = this.delayedCheck;
+    if (this.$el.attr('type') === 'radio') {
+      return $('[name="' + this.$el.attr("name") + '"]').on('change', this.eventHandlers.radio);
+    } else {
+      this.$el.on('change', this.eventHandlers.change);
+      this.$el.on('blur', this.eventHandlers.blur);
+      if (this.field[1] === 'one-of') {
+        $(window).on('nod-run-one-of', this.eventHandlers.window);
+      }
+      if (this.get.delay) {
+        return this.$el.on('keyup', this.eventHandlers.keyup);
       }
     }
   };
@@ -190,9 +214,17 @@ Msg = (function() {
 
     this.createMsg = __bind(this.createMsg, this);
 
+    this.destroy = __bind(this.destroy, this);
+
     this.$msg = this.createMsg(field[2]);
     this.showMsg = this.createShowMsg();
   }
+
+  Msg.prototype.destroy = function() {
+    this.toggle(true);
+    this.$msg = null;
+    return this.showMsg = null;
+  };
 
   Msg.prototype.createMsg = function(msg) {
     return $('<span/>', {
@@ -285,6 +317,10 @@ Nod = (function() {
 
     this.events = __bind(this.events, this);
 
+    this.destroy = __bind(this.destroy, this);
+
+    this.destroyListeners = __bind(this.destroyListeners, this);
+
     this.createListeners = __bind(this.createListeners, this);
 
     if (!fields) {
@@ -325,6 +361,22 @@ Nod = (function() {
       }
     }
     return listeners;
+  };
+
+  Nod.prototype.destroyListeners = function() {
+    var listener, _i, _len, _ref;
+    _ref = this.listeners;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      listener = _ref[_i];
+      listener.destroy();
+    }
+  };
+
+  Nod.prototype.destroy = function() {
+    $(this.get.groupSelector).removeClass(this.get.groupClass);
+    this.submit.removeClass('disabled');
+    this.submit.removeAttr('disabled');
+    return this.destroyListeners();
   };
 
   Nod.prototype.events = function() {

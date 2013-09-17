@@ -8,6 +8,11 @@ class Msg
     @$msg = @createMsg field[ 2 ]             # create the element
     @showMsg = @createShowMsg()               # Create fn to show @$msg
 
+  destroy:=>
+    @toggle(true) #turning off the error
+    @$msg=null
+    @showMsg=null
+
 
   createMsg : ( msg ) =>                      # Returns the el we toggle
     $ '<span/>',

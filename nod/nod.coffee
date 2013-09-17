@@ -64,6 +64,17 @@ class Nod
 
     return listeners
 
+  destroyListeners: =>
+    for listener in @listeners
+      listener.destroy()
+    return
+
+  destroy:=>
+    $(@get.groupSelector).removeClass(@get.groupClass)
+    @submit.removeClass( 'disabled' )
+    @submit.removeAttr( 'disabled' )
+    @destroyListeners()
+
 
   events : =>
                        
@@ -177,4 +188,5 @@ class Nod
       when 'submit' then txt = 'Couldn\'t find submit button: '
       when 'field'  then txt = 'Metrics for each field must have three parts: '
     throw new Error txt + el
+
 

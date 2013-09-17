@@ -1,0 +1,34 @@
+
+hr#example5
+form#ex5.form-horizontal
+  p Leave at least one number
+  .control-group
+    label.control-label Home
+    .controls
+      input(type='text')#ex5a_home
+  .control-group
+    label.control-label Work
+    .controls
+      input(type='text')#ex5a_work
+  .control-group
+    label.control-label Mobile
+    .controls
+      input(type='text')#ex5a_mobile
+  .controls
+    button(type='submit').btn Call me
+  script
+    enableNod=function(){
+        var metrics = [
+          [ '#ex5a_home, #ex5a_work, #ex5a_mobile', 'one-of', 'Add at least one number' ]
+        ];
+        $("#ex5").nod( metrics );
+    }
+    enableNod()
+button(onclick="$('#ex5').nod().destroy()" ) DisableNod
+button(onclick="enableNod()" ) EnableNod
+// use http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/Encode.aspx
+.code
+  pre
+  |
+  | $('#ex5').nod().destroy()
+  |

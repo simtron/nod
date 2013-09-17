@@ -551,6 +551,48 @@ $(&quot;#ex3&quot;).nod( metrics, options );</pre>
   $( '#ex4' ).nod( metrics );
 &lt;/script&gt;</pre>
       </div>
+      <hr id="example5">
+      <form id="ex5" class="form-horizontal">
+        <p>Leave at least one number</p>
+        <div class="control-group">
+          <label class="control-label">Home</label>
+          <div class="controls">
+            <input type="text" id="ex5a_home">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Work</label>
+          <div class="controls">
+            <input type="text" id="ex5a_work">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Mobile</label>
+          <div class="controls">
+            <input type="text" id="ex5a_mobile">
+          </div>
+        </div>
+        <div class="controls">
+          <button type="submit" class="btn">Call me</button>
+        </div>
+        <script>
+          enableNod=function(){
+              var metrics = [
+                [ '#ex5a_home, #ex5a_work, #ex5a_mobile', 'one-of', 'Add at least one number' ]
+              ];
+              $("#ex5").nod( metrics );
+          }
+          enableNod()
+        </script>
+      </form>
+      <button onclick="$('#ex5').nod().destroy()">DisableNod</button>
+      <button onclick="enableNod()">EnableNod</button>
+      <!-- use http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/Encode.aspx-->
+      <div class="code">
+        <pre></pre>|
+        $('#ex5').nod().destroy()
+        |
+      </div>
     </div>
     <script>!function($) { $(function(){ window.prettyPrint && prettyPrint() }) }(window.jQuery);</script>
   </body>
