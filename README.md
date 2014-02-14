@@ -7,6 +7,21 @@ Frontend validation jQuery plugin
 just clone this and open index.html :)
 
 
+Post fork features -by Simtron
+------------------------------
+Can remove nod validation from the form by calling 
+
+`$('your-form-element-unique-id').nod().rever()`
+
+Now you can dynamically reload forms with deinitialization and reinitialization!!
+Example?
+
+[www.credihealth.com/query]
+If you change query type from domestic to international, new fields addup and new validations are added on the fly!
+It is for this project, I had to fork nod.
+
+Lately I'm happy with HTML5's own form validation features.
+
 Dependencies
 ------------
 
