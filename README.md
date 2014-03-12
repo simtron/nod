@@ -11,7 +11,7 @@ Post fork features -by Simtron
 ------------------------------
 Can remove nod validation from the form by calling 
 
-`$('your-form-element-unique-id').nod().rever()`
+`$('your-form-element-unique-id').nod().destroy()`
 
 Now you can dynamically reload forms with deinitialization and reinitialization!!
 Example?
