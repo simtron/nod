@@ -169,7 +169,9 @@ class Nod
         @runCheck()
       return !@status
     ).length
-
+    
+  recheck : =>
+    l.runCheck() for l in @listeners
 
   # Helper fn used in the constructor to see if both the form and the submit
   # button is there. It will throw errors at the user in case something is
